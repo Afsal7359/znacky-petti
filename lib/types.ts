@@ -32,6 +32,7 @@ export type Section = {
   id: string
   key: string
   label: string
+  page: string
   eyebrow: string | null
   title: string | null
   subtitle: string | null
@@ -243,7 +244,26 @@ export type Subscriber = {
   created_at: string
 }
 
+export type Page = {
+  id: string
+  key: string
+  slug: string
+  label: string
+  nav_label: string | null
+  eyebrow: string | null
+  title: string | null
+  subtitle: string | null
+  banner_image: string | null
+  meta_title: string | null
+  meta_description: string | null
+  show_in_nav: boolean
+  show_header: boolean
+  is_visible: boolean
+  sort_order: number
+}
+
 export type SiteData = {
+  pages: Page[]
   settings: SiteSettings
   sections: Record<string, Section>
   nav: NavLink[]

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
 import SectionHead from '@/components/SectionHead'
 import type { Product, Section, SiteSettings } from '@/lib/types'
@@ -24,6 +25,9 @@ export default function Products({
           ))}
         </div>
         <div className="products-more reveal">
+          <Link href="/products" className="btn btn-primary">
+            View all products
+          </Link>
           <a
             href={waLink(
               settings.whatsapp_number,

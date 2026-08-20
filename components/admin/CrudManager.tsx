@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import FieldInput, { type VariantDraft } from '@/components/admin/FieldInput'
 import { blankRecord, type CrudConfig } from '@/components/admin/fields'
 import { createClient } from '@/lib/supabase/client'
+import { RESERVED_SLUGS } from '@/lib/pages'
 
 type Row = Record<string, unknown> & { id?: string }
 
@@ -92,6 +93,19 @@ export default function CrudManager({ config }: { config: CrudConfig }) {
   async function save(e: React.FormEvent) {
     e.preventDefault()
     if (!editing) return
+
+    // a product slug must not collide with a real route, or the page would shadow it
+    const slugField = fields.find((f) => f.type === 'slug' || f.key === 'slug')
+    if (slugField && table !== 'pages') {
+      const value = String(editing[slugField.key] ?? '').trim().toLowerCase()
+      if (value && RESERVED_SLUGS.includes(value)) {
+        setError(
+          `"${value}" is a page address on the site, so it cannot be used as a link. Try something like "${value}-petti".`
+        )
+        return
+      }
+    }
+
     setSaving(true)
     setError('')
 

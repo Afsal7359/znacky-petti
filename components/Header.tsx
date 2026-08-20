@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useCart } from '@/components/CartProvider'
 import {
@@ -25,6 +26,13 @@ export default function Header({ settings, nav, showAnnouncement }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [drawer, setDrawer] = useState(false)
   const cart = useCart()
+  const pathname = usePathname()
+
+  /** Highlight the menu item for the page you are on. '/#products' counts as home. */
+  function isActive(href: string) {
+    const path = href.split('#')[0] || '/'
+    return path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(path + '/')
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -65,7 +73,12 @@ export default function Header({ settings, nav, showAnnouncement }: Props) {
 
           <nav className="nav-links">
             {nav.map((l) => (
-              <Link key={l.id} href={l.href}>
+              <Link
+                key={l.id}
+                href={l.href}
+                className={isActive(l.href) ? 'active' : undefined}
+                aria-current={isActive(l.href) ? 'page' : undefined}
+              >
                 {l.label}
               </Link>
             ))}
@@ -118,7 +131,13 @@ export default function Header({ settings, nav, showAnnouncement }: Props) {
         </div>
         <nav>
           {nav.map((l) => (
-            <Link key={l.id} href={l.href} onClick={() => setDrawer(false)}>
+            <Link
+              key={l.id}
+              href={l.href}
+              className={isActive(l.href) ? 'active' : undefined}
+              aria-current={isActive(l.href) ? 'page' : undefined}
+              onClick={() => setDrawer(false)}
+            >
               {l.label}
             </Link>
           ))}

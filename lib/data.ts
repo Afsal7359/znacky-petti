@@ -1,6 +1,8 @@
 import { createPublicClient } from '@/lib/supabase/public'
+import { DEFAULT_PAGES, DEFAULT_PAGE_SECTIONS } from '@/lib/pages'
 import type {
   Faq,
+  Page,
   HeroSlide,
   NavLink,
   Offer,
@@ -48,6 +50,29 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   announcement_enabled: true,
 }
 
+/**
+ * Sections that used to live on the home page now have their own routes. If the menu in
+ * the database still points at the old in-page anchors, send it to the right page so the
+ * navigation keeps working before 03_multipage.sql is run.
+ */
+const LEGACY_NAV: Record<string, string> = {
+  '/#products': '/products',
+  '/#story': '/our-story',
+  '/#stats': '/our-story',
+  '/#why': '/our-story',
+  '/#combos': '/combos',
+  '/#offers': '/combos',
+  '/#wholesale': '/wholesale',
+  '/#testimonials': '/reviews',
+  '/#reviews': '/reviews',
+  '/#faq': '/faq',
+  '/#contact': '/contact',
+}
+
+function normaliseNav(links: NavLink[]): NavLink[] {
+  return links.map((l) => ({ ...l, href: LEGACY_NAV[l.href] ?? l.href }))
+}
+
 /** True only when real credentials exist — the admin panel needs these. */
 export function supabaseConfigured() {
   return Boolean(
@@ -63,6 +88,7 @@ export function demoMode() {
 function emptyData(): SiteData {
   return {
     settings: DEFAULT_SETTINGS,
+    pages: DEFAULT_PAGES,
     sections: {},
     nav: [],
     slides: [],
@@ -89,6 +115,7 @@ export async function getSiteData(): Promise<SiteData> {
 
     const [
       settings,
+      pages,
       sections,
       nav,
       slides,
@@ -103,6 +130,8 @@ export async function getSiteData(): Promise<SiteData> {
       peek,
     ] = await Promise.all([
       supabase.from('site_settings').select('*').eq('id', 1).maybeSingle(),
+      // `pages` only exists after 03_multipage.sql — fall back until it is run
+      supabase.from('pages').select('*').order('sort_order'),
       supabase.from('sections').select('*').order('sort_order'),
       supabase.from('nav_links').select('*').eq('is_active', true).order('sort_order'),
       supabase.from('hero_slides').select('*').eq('is_active', true).order('sort_order'),
@@ -127,8 +156,9 @@ export async function getSiteData(): Promise<SiteData> {
 
     return {
       settings: { ...DEFAULT_SETTINGS, ...(settings.data ?? {}) } as SiteSettings,
+      pages: pages.data?.length ? (pages.data as Page[]) : DEFAULT_PAGES,
       sections: sectionMap,
-      nav: (nav.data ?? []) as NavLink[],
+      nav: normaliseNav((nav.data ?? []) as NavLink[]),
       slides: (slides.data ?? []) as HeroSlide[],
       products: allProducts.filter((p) => p.type === 'product').map(sortVariants),
       combos: allProducts.filter((p) => p.type === 'combo').map(sortVariants),
@@ -222,4 +252,40 @@ export async function getSettings(): Promise<SiteSettings> {
   } catch {
     return DEFAULT_SETTINGS
   }
+}
+
+/**
+ * The ordered section keys that render on a page.
+ *
+ * Uses the `sections.page` column when the migration has been run; otherwise falls back
+ * to the built-in layout. Visibility toggles are respected either way.
+ */
+export function sectionsForPage(data: SiteData, pageKey: string): string[] {
+  const all = Object.values(data.sections)
+  const migrated = all.some((s) => typeof s.page === 'string' && s.page.length > 0)
+
+  if (migrated) {
+    return all
+      .filter((s) => s.page === pageKey && s.is_visible !== false)
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((s) => s.key)
+  }
+
+  return (DEFAULT_PAGE_SECTIONS[pageKey] ?? []).filter(
+    (k) => data.sections[k]?.is_visible !== false
+  )
+}
+
+/** Look up one page's settings, falling back to the built-in definition. */
+export function getPage(data: SiteData, key: string): Page | null {
+  return (
+    data.pages.find((p) => p.key === key) ?? DEFAULT_PAGES.find((p) => p.key === key) ?? null
+  )
+}
+
+/** Pages that should appear in the header / footer menus. */
+export function navPages(data: SiteData): Page[] {
+  return data.pages
+    .filter((p) => p.is_visible !== false && p.show_in_nav !== false)
+    .sort((a, b) => a.sort_order - b.sort_order)
 }

@@ -1,9 +1,13 @@
 // TEMPORARY preview data — used only to screenshot the design locally.
 import type { SiteData } from '@/lib/types'
 import { DEFAULT_SETTINGS } from '@/lib/data'
+import { DEFAULT_PAGES, DEFAULT_PAGE_SECTIONS } from '@/lib/pages'
+
+const pageOf = (key: string) =>
+  Object.entries(DEFAULT_PAGE_SECTIONS).find(([, keys]) => keys.includes(key))?.[0] ?? 'global'
 
 const s = (key: string, label: string, eyebrow: string, title: string, subtitle: string, order: number) => ({
-  id: key, key, label, eyebrow, title, subtitle, is_visible: true, sort_order: order,
+  id: key, key, label, page: pageOf(key), eyebrow, title, subtitle, is_visible: true, sort_order: order,
 })
 
 const variants = (id: string, base: number) => [
@@ -32,6 +36,7 @@ const IMG = {
 
 export const DEMO: SiteData = {
   settings: DEFAULT_SETTINGS,
+  pages: DEFAULT_PAGES,
   sections: Object.fromEntries(
     [
       s('hero', 'Hero', "🌿 Straight From God's Own Country", 'Unbox the Taste of Kerala', 'Small-batch banana chips, murukku, sharkkara varatti and more — hand-cut, roasted in real coconut oil, and packed fresh the same week you order.', 1),
@@ -54,12 +59,12 @@ export const DEMO: SiteData = {
   ),
   nav: [
     { id: 'n1', label: 'Home', href: '/', is_active: true, sort_order: 0 },
-    { id: 'n2', label: 'Our Story', href: '/#story', is_active: true, sort_order: 1 },
+    { id: 'n2', label: 'Our Story', href: '/our-story', is_active: true, sort_order: 1 },
     { id: 'n3', label: 'Products', href: '/#products', is_active: true, sort_order: 2 },
-    { id: 'n4', label: 'Combos', href: '/#combos', is_active: true, sort_order: 3 },
-    { id: 'n5', label: 'Wholesale', href: '/#wholesale', is_active: true, sort_order: 4 },
-    { id: 'n6', label: 'FAQ', href: '/#faq', is_active: true, sort_order: 5 },
-    { id: 'n7', label: 'Contact', href: '/#contact', is_active: true, sort_order: 6 },
+    { id: 'n4', label: 'Combos', href: '/combos', is_active: true, sort_order: 3 },
+    { id: 'n5', label: 'Wholesale', href: '/wholesale', is_active: true, sort_order: 4 },
+    { id: 'n6', label: 'FAQ', href: '/faq', is_active: true, sort_order: 5 },
+    { id: 'n7', label: 'Contact', href: '/contact', is_active: true, sort_order: 6 },
   ],
   slides: [
     { id: 'h1', image_url: '/brand/chest.webp', alt_text: 'Znacky Petti chest', headline: '', subheadline: '', cta_label: '', cta_link: '', is_active: true, sort_order: 0 },

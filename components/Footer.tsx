@@ -152,8 +152,8 @@ export default function Footer({ settings, nav, newsletter }: Props) {
             © {new Date().getFullYear()} {settings.copyright_text}
           </p>
           <div className="footer-bottom-links">
-            <Link href="/#faq">FAQ</Link>
-            <Link href="/#contact">Contact</Link>
+            <Link href="/faq">FAQ</Link>
+            <Link href="/contact">Contact</Link>
           </div>
         </div>
       </div>

@@ -22,6 +22,8 @@ npm install
    keep-alive function.
 3. New query again → paste `supabase/02_seed.sql` → **Run**.
    This fills the site with the current content (8 products, 4 combos, offers, FAQs…).
+4. New query again → paste `supabase/03_multipage.sql` → **Run**.
+   This creates the `pages` table and splits the content across the separate pages.
 
 ### c. Create your admin login
 
@@ -65,7 +67,8 @@ npm run dev
 | **Combo pettis** | The Special Combo section — same fields plus savings ribbon |
 | **Categories** | Product grouping |
 | **Offers** | The coloured offer cards, coupon codes, colours, expiry |
-| **Sections & visibility** | Show/hide **every** home-page block, reorder them, edit each heading |
+| **Pages** | Every page: URL, menu label, banner, SEO, and a switch to take it offline |
+| **Sections & visibility** | Show/hide **every** block, reorder within a page, edit headings, and move a section to another page |
 | **Hero slider** | The sliding images in the hero — add as many as you want, set the order |
 | **Peek strip** | The scrolling round badges under the hero |
 | **Our story** | Photo, badge, paragraphs, signature |
@@ -86,7 +89,30 @@ Storage (the public `media` bucket, created by the schema script).
 
 ---
 
-## 3. How the shop works
+## 3. Pages
+
+The site is multi-page. Each page is a real URL, and each one is built from the sections
+assigned to it in **Sections & visibility**:
+
+| Page | URL | Sections on it |
+|---|---|---|
+| Home | `/` | Hero slider, Products, Peek Inside the Petti, Our Process |
+| Products | `/products` | The full shop, filterable by category |
+| Our Story | `/our-story` | Story, Stats, Why Znacky Petti |
+| Combos | `/combos` | Special Combo Pettis, Offers |
+| Wholesale | `/wholesale` | Business / bulk enquiry |
+| Reviews | `/reviews` | Testimonials |
+| FAQ | `/faq` | Questions and answers |
+| Contact | `/contact` | Contact details, form, map |
+| Product detail | `/banana-chips` | One product, at the root slug |
+
+You can move any section to any page, hide it, or reorder it from the admin panel —
+nothing about that layout is fixed in code.
+
+**Loading:** a gold progress bar runs across the top during every page change, and the
+content pages show shimmer skeletons while their data arrives.
+
+## 4. How the shop works
 
 1. **Product cards** show the image full-bleed at the top, the ribbon, the discount, the
    price and MRP, the pack sizes, an **Add to Cart** button and a WhatsApp icon button.
@@ -100,14 +126,12 @@ Storage (the public `media` bucket, created by the schema script).
    - opens WhatsApp with the complete order written out — every item, quantity,
      line total, subtotal, delivery, grand total and the full delivery address.
 
-   The exact message is previewed live on the checkout page while the customer types.
-
 The cart and checkout can both be switched off in **Site settings** if you ever want to
 go back to WhatsApp-only ordering.
 
 ---
 
-## 4. Daily keep-alive
+## 5. Daily keep-alive
 
 Supabase pauses free projects after about a week of inactivity. Three ways to prevent
 that are already wired up — you only need one, but two are set up as a safety net.
@@ -144,7 +168,7 @@ Set `CRON_SECRET` in your environment to require
 
 ---
 
-## 5. Deploying
+## 6. Deploying
 
 1. Push the project to GitHub.
 2. Import it on [vercel.com](https://vercel.com).
@@ -157,13 +181,17 @@ Content changes made in the admin panel appear on the live site within a minute
 
 ---
 
-## 6. Project layout
+## 7. Project layout
 
 ```
 app/
-  page.tsx              home page — renders sections in the admin-defined order
-  [slug]/page.tsx       product & combo detail pages
-  checkout/page.tsx     checkout form
+  (site)/               all public pages, sharing one header/footer layout
+    page.tsx            home
+    products/           the full shop
+    our-story/ combos/ wholesale/ reviews/ faq/ contact/
+    checkout/           checkout form
+    loading.tsx         skeleton shown while a page loads
+  [slug]/page.tsx       product & combo detail pages (see the note below)
   api/keepalive/        daily ping endpoint
   admin/                the whole admin panel
 components/
@@ -184,13 +212,18 @@ legacy/index.html       the original single-file site, kept for reference
 
 ---
 
-## 7. Notes
+## 8. Notes
 
 - **Font:** Roboto throughout, loaded through `next/font` (self-hosted, no external
   request).
 - **Security:** the database uses row level security — visitors can read published
   content and submit orders/messages, but only a signed-in admin can change anything.
   `/admin` is protected by middleware.
+- **Product pages sit outside the `(site)` route group on purpose.** In Next 15 a
+  `notFound()` raised beneath a nested layout or a `loading.tsx` streams the response
+  before the status is set, so a missing product would return HTTP 200 and could be
+  indexed as a real page. Keeping `app/[slug]` flat makes unknown slugs return a true
+  404. That is also why the product route has no skeleton — the progress bar covers it.
 - **The original design** is preserved section for section; the product card, the
   *Why Znacky Petti* grid and the *Our Process* timeline were rebuilt as requested,
   the hero got the image slider, and the rotating cart icon in the business section

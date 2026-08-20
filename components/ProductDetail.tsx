@@ -66,7 +66,7 @@ export default function ProductDetail({
         <nav className="crumbs">
           <Link href="/">Home</Link>
           <ChevronRight />
-          <Link href={product.type === 'combo' ? '/#combos' : '/#products'}>
+          <Link href={product.type === 'combo' ? '/combos' : '/#products'}>
             {product.type === 'combo' ? 'Combos' : 'Products'}
           </Link>
           <ChevronRight />

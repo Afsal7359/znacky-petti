@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/components/CartProvider'
 import ScrollReveal from '@/components/Reveal'
+import RouteProgress from '@/components/RouteProgress'
 import { getSettings } from '@/lib/data'
 
 const roboto = Roboto({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={roboto.variable}>
       <body>
         <CartProvider>
+          <RouteProgress />
           {children}
           <ScrollReveal />
         </CartProvider>

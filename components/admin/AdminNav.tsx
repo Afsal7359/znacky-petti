@@ -25,8 +25,9 @@ const GROUPS: { title: string; links: { href: string; label: string }[] }[] = [
     ],
   },
   {
-    title: 'Home page',
+    title: 'Content',
     links: [
+      { href: '/admin/pages', label: 'Pages' },
       { href: '/admin/sections', label: 'Sections & visibility' },
       { href: '/admin/hero', label: 'Hero slider' },
       { href: '/admin/peek', label: 'Peek strip' },

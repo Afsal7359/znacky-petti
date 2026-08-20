@@ -995,3 +995,141 @@ footer h4{font-family:var(--font-accent);color:var(--gold-light);font-size:.92re
   .t-card{padding:30px 22px}
   .hero-arrow{display:none}
 }
+
+/* ============================================
+   PAGE HEADER (inner pages)
+   ============================================ */
+.page-header{
+  position:relative;overflow:hidden;isolation:isolate;
+  padding:calc(var(--header-h) + 56px) 0 66px;
+  background:
+    radial-gradient(ellipse 900px 420px at 78% -10%, rgba(232,169,59,.26), transparent 62%),
+    radial-gradient(ellipse 640px 380px at 4% 110%, rgba(31,77,58,.12), transparent 62%),
+    var(--ivory);
+  border-bottom:1px solid var(--line);
+}
+.page-header-art{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.page-header-art .blob{position:absolute;border-radius:50%;filter:blur(2px)}
+.page-header-art .blob-1{
+  width:190px;height:190px;top:-46px;right:8%;
+  background:radial-gradient(circle at 32% 30%, rgba(246,227,184,.9), rgba(232,169,59,.22));
+}
+.page-header-art .blob-2{
+  width:130px;height:130px;bottom:-52px;left:6%;
+  background:radial-gradient(circle at 40% 34%, rgba(228,239,232,.95), rgba(31,77,58,.14));
+}
+.page-header-inner{position:relative;text-align:center;max-width:780px}
+.page-header h1{
+  font-size:clamp(2.1rem,5vw,3.4rem);margin-bottom:16px;letter-spacing:-.02em;
+}
+.page-header p{
+  font-size:1.06rem;color:var(--ink-soft);max-width:600px;margin:0 auto;
+}
+
+/* breadcrumb */
+.crumbs{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  font-size:.82rem;font-weight:600;color:var(--ink-faint);margin-bottom:20px;
+}
+.crumbs a{color:var(--maroon);transition:color .25s}
+.crumbs a:hover{color:var(--maroon-dark);text-decoration:underline}
+.crumbs span[aria-hidden]{opacity:.5}
+.crumbs span[aria-current]{color:var(--brown-soft)}
+
+/* photo variant */
+.page-header.has-image{border-bottom:0}
+.page-header.has-image .page-header-bg{
+  position:absolute;inset:0;z-index:-1;background-size:cover;background-position:center;
+}
+.page-header.has-image .page-header-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg, rgba(42,24,16,.62) 0%, rgba(42,24,16,.78) 100%);
+}
+.page-header.has-image h1{color:var(--ivory)}
+.page-header.has-image p{color:rgba(255,251,243,.82)}
+.page-header.has-image .crumbs{color:rgba(255,251,243,.6)}
+.page-header.has-image .crumbs a{color:var(--gold-light)}
+.page-header.has-image .crumbs span[aria-current]{color:rgba(255,251,243,.9)}
+.page-header.has-image .eyebrow{
+  background:rgba(255,255,255,.16);color:var(--ivory);border-color:rgba(255,255,255,.24);
+}
+
+/* the first section after a header should not double up on padding */
+.page-header + div > section{padding-top:76px}
+
+@media (max-width:760px){
+  .page-header{padding:calc(var(--header-h) + 34px) 0 46px}
+  .page-header p{font-size:.98rem}
+  .page-header-art .blob-1{width:130px;height:130px;right:-24px}
+  .page-header-art .blob-2{width:96px;height:96px;left:-26px}
+  .page-header + div > section{padding-top:56px}
+}
+
+/* active menu item */
+.nav-links a.active{color:var(--maroon)}
+.nav-links a.active::after{transform:scaleX(1)}
+.mobile-drawer nav a.active{color:var(--maroon)}
+
+/* ============================================
+   SHOP FILTERS (all products page)
+   ============================================ */
+.shop-filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:22px}
+.shop-filter{
+  font-weight:700;font-size:.86rem;color:var(--brown-soft);background:var(--paper);
+  border:1.5px solid var(--line);border-radius:999px;padding:10px 20px;
+  transition:background .25s,color .25s,border-color .25s,transform .25s;
+}
+.shop-filter:hover{border-color:var(--gold);transform:translateY(-2px)}
+.shop-filter.active{background:var(--brown);border-color:var(--brown);color:var(--ivory)}
+.shop-count{text-align:center;font-size:.86rem;color:var(--ink-faint);margin-bottom:30px}
+@media (max-width:600px){
+  .shop-filter{font-size:.78rem;padding:8px 15px}
+}
+.products-more{gap:14px;flex-wrap:wrap}
+
+/* ============================================
+   LOADING — shimmer skeletons + route progress
+   ============================================ */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+.sk{
+  display:block;position:relative;overflow:hidden;border-radius:8px;
+  background:linear-gradient(90deg, rgba(36,24,18,.06) 0%, rgba(36,24,18,.10) 50%, rgba(36,24,18,.06) 100%);
+  background-size:200% 100%;
+  animation:skShimmer 1.5s ease-in-out infinite;
+}
+@keyframes skShimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.sk-line{border-radius:8px}
+.sk-media{width:100%;aspect-ratio:1/1;border-radius:0}
+.sk-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);
+  overflow:hidden;box-shadow:var(--shadow-sm);
+}
+.sk-header{background:var(--ivory-2)}
+.sk-header .sk{
+  background:linear-gradient(90deg, rgba(36,24,18,.05) 0%, rgba(36,24,18,.09) 50%, rgba(36,24,18,.05) 100%);
+  background-size:200% 100%;
+}
+
+/* thin bar that runs across the top while the next page loads */
+.route-progress{
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:400;pointer-events:none;
+  background:transparent;
+}
+.route-progress span{
+  display:block;height:100%;width:var(--p,0%);
+  background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--maroon));
+  box-shadow:0 0 10px rgba(232,169,59,.7);
+  transition:width .25s ease, opacity .35s ease;
+}
+.route-progress.done span{opacity:0}
+
+@media (prefers-reduced-motion: reduce){
+  .sk{animation:none}
+}

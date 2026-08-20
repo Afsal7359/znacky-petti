@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import CheckoutForm from '@/components/CheckoutForm'
-import SiteShell from '@/components/SiteShell'
 import { ChevronRight } from '@/components/Icons'
 import { getSiteData } from '@/lib/data'
 
@@ -14,7 +13,7 @@ export default async function CheckoutPage() {
   const data = await getSiteData()
 
   return (
-    <SiteShell settings={data.settings} nav={data.nav} sections={data.sections}>
+    <>
       <section className="checkout">
         <div className="container">
           <nav className="crumbs">
@@ -36,6 +35,6 @@ export default async function CheckoutPage() {
           )}
         </div>
       </section>
-    </SiteShell>
+    </>
   )
 }
