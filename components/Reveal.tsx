@@ -13,52 +13,58 @@ const SELECTOR = '.reveal, .reveal-left, .reveal-right, .reveal-zoom, .reveal-st
  */
 export default function ScrollReveal() {
   useEffect(() => {
+    let io: IntersectionObserver | null = null
+    let mo: MutationObserver | null = null
+    let rafId: number
+
     const show = (el: HTMLElement) => el.classList.add('in')
 
-    if (!('IntersectionObserver' in window)) {
-      document.querySelectorAll<HTMLElement>(SELECTOR).forEach(show)
-      return
-    }
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in')
-            io.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
-    )
-
-    const observe = (el: HTMLElement) => {
-      if (el.classList.contains('in') || el.dataset.revealBound) return
-      el.dataset.revealBound = '1'
-      // already on screen → show immediately, no flash of invisible content
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.9) show(el)
-      else io.observe(el)
-    }
-
-    const scan = (root: ParentNode) => {
-      if (root instanceof HTMLElement && root.matches(SELECTOR)) observe(root)
-      root.querySelectorAll<HTMLElement>(SELECTOR).forEach(observe)
-    }
-
-    scan(document)
-
-    const mo = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) scan(node)
-        })
+    rafId = requestAnimationFrame(() => {
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll<HTMLElement>(SELECTOR).forEach(show)
+        return
       }
+
+      io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in')
+              io?.unobserve(entry.target)
+            }
+          })
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+      )
+
+      const observe = (el: HTMLElement) => {
+        if (el.classList.contains('in') || el.dataset.revealBound) return
+        el.dataset.revealBound = '1'
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.9) show(el)
+        else io?.observe(el)
+      }
+
+      const scan = (root: ParentNode) => {
+        if (root instanceof HTMLElement && root.matches(SELECTOR)) observe(root)
+        root.querySelectorAll<HTMLElement>(SELECTOR).forEach(observe)
+      }
+
+      scan(document)
+
+      mo = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          mutation.addedNodes.forEach((node) => {
+            if (node instanceof HTMLElement) scan(node)
+          })
+        }
+      })
+      mo.observe(document.body, { childList: true, subtree: true })
     })
-    mo.observe(document.body, { childList: true, subtree: true })
 
     return () => {
-      io.disconnect()
-      mo.disconnect()
+      cancelAnimationFrame(rafId)
+      io?.disconnect()
+      mo?.disconnect()
     }
   }, [])
 
