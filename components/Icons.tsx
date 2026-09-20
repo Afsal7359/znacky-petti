@@ -213,6 +213,29 @@ export const ArrowRight = (p: P) => (
   </svg>
 )
 
+export const SearchIcon = (p: P) => (
+  <svg viewBox="0 0 24 24" {...stroke} {...p}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+)
+
+export const SearchCheckIcon = (p: P) => (
+  <svg viewBox="0 0 24 24" {...stroke} {...p}>
+    <circle cx="10.5" cy="10.5" r="6.5" />
+    <path d="m21 21-4.4-4.4" />
+    <path d="m7.5 10.5 2 2 3.5-4" />
+  </svg>
+)
+
+export const LockIcon = (p: P) => (
+  <svg viewBox="0 0 24 24" {...stroke} {...p}>
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    <circle cx="12" cy="16" r="1" fill="currentColor" />
+  </svg>
+)
+
 const ICONS: Record<string, (p: P) => React.JSX.Element> = {
   leaf: LeafIcon,
   trophy: TrophyIcon,
@@ -229,6 +252,11 @@ const ICONS: Record<string, (p: P) => React.JSX.Element> = {
   spark: SparkIcon,
   tag: TagIcon,
   whatsapp: WhatsAppIcon,
+  search: SearchIcon,
+  checked: SearchCheckIcon,
+  lock: LockIcon,
+  sealed: LockIcon,
+  check: CheckIcon,
 }
 
 export const ICON_KEYS = Object.keys(ICONS)

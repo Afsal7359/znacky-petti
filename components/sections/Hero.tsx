@@ -201,38 +201,6 @@ export default function Hero({ settings, section, slides, peek, peekSection }: P
             ) : null}
           </div>
 
-          <div className="orbit-glyph orbit1">
-            <svg viewBox="0 0 60 60">
-              <circle cx="30" cy="30" r="28" fill="var(--gold-pale)" />
-              <ellipse cx="30" cy="30" rx="17" ry="12" fill="#E8B23B" stroke="#B9791E" strokeWidth="1.5" />
-              <path d="M17 30h26M20 24l20 12M20 36l20-12" stroke="#B9791E" strokeWidth="1" opacity=".5" />
-            </svg>
-          </div>
-          <div className="orbit-glyph orbit2">
-            <svg viewBox="0 0 60 60">
-              <circle cx="30" cy="30" r="28" fill="#F3DCA6" />
-              <path
-                d="M30 42c-6 0-9-4-9-8s3-6 6-6 5 2 5 5-2 4-4 4-3-1.3-3-3"
-                fill="none"
-                stroke="#8A4A1F"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-          <div className="orbit-glyph orbit3">
-            <svg viewBox="0 0 60 60">
-              <circle cx="30" cy="30" r="28" fill="var(--green-soft)" />
-              <path d="M30 16c8 5 8 23 0 28-8-5-8-23 0-28Z" fill="#2E6B4C" />
-              <path d="M30 16v28" stroke="#1F4D3A" strokeWidth="1.4" />
-            </svg>
-          </div>
-          <div className="orbit-glyph orbit4">
-            <svg viewBox="0 0 60 60">
-              <circle cx="30" cy="30" r="28" fill="#EFD9A9" />
-              <rect x="18" y="18" width="24" height="24" rx="4" fill="#A9691F" transform="rotate(12 30 30)" />
-            </svg>
-          </div>
           <span className="sr-only">{active.alt_text}</span>
         </div>
       </div>

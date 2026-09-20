@@ -2,6 +2,17 @@ import SectionHead from '@/components/SectionHead'
 import { Icon } from '@/components/Icons'
 import type { ProcessStep, Section } from '@/lib/types'
 
+function getStepIconName(step: ProcessStep): string {
+  if (step.icon && step.icon.trim()) return step.icon.trim()
+  const title = (step.title || '').toLowerCase()
+  if (title.includes('check')) return 'checked'
+  if (title.includes('seal')) return 'sealed'
+  if (title.includes('select') || title.includes('source')) return 'sprout'
+  if (title.includes('pack')) return 'box'
+  if (title.includes('deliver') || title.includes('ship')) return 'truck'
+  return 'leaf'
+}
+
 export default function Process({
   section,
   steps,
@@ -20,7 +31,7 @@ export default function Process({
           {steps.map((step) => (
             <article className="proc-step" key={step.id}>
               <div className="proc-node">
-                <Icon name={step.icon} />
+                <Icon name={getStepIconName(step)} />
                 <span className="proc-num">{step.step_no}</span>
               </div>
               <div className="proc-body">
